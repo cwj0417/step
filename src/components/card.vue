@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="test">
     <p class="card">
       {{text}}
     </p>
@@ -8,6 +8,11 @@
 
 <script>
 export default {
+  methods: {
+    test () {
+      console.log('111')
+    }
+  },
   props: ['text']
 }
 </script>

@@ -18,18 +18,24 @@
       <input type="text" class="form-control" v-model="motto" placeholder="v-model" />
       <input type="text" class="form-control" v-model.lazy="motto" placeholder="v-model.lazy" />
     </form>
-    <a href="/pages/counter/main" class="counter">去往Vuex示例页面</a>
+    <a href="/pages/counter/main" class="counter">去往Vuex示例页面{{test}}</a>
   </div>
 </template>
 
 <script>
 import card from '@/components/card'
+import store from '../counter/store'
 
 export default {
   data () {
     return {
       motto: 'Hello World',
       userInfo: {}
+    }
+  },
+  computed: {
+    test () {
+      return store.state.count
     }
   },
 
@@ -46,11 +52,7 @@ export default {
       // 调用登录接口
       wx.login({
         success: () => {
-          wx.getUserInfo({
-            success: (res) => {
-              this.userInfo = res.userInfo
-            }
-          })
+          //
         }
       })
     },

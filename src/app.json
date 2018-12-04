@@ -1,13 +1,15 @@
 {
   "pages": [
+    "pages/did/main",
+    "pages/task/main",
     "pages/index/main",
     "pages/logs/main",
     "pages/counter/main"
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "WeChat",
-    "navigationBarTextStyle": "black"
+    "navigationBarBackgroundColor": "#28AC86",
+    "navigationBarTitleText": "step",
+    "navigationBarTextStyle": "white"
   }
 }

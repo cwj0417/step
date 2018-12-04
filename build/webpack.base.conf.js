@@ -15,11 +15,11 @@ function resolve (dir) {
 function getEntry (rootSrc) {
   var map = {};
   glob.sync(rootSrc + '/pages/**/main.js')
-  .forEach(file => {
-    var key = relative(rootSrc, file).replace('.js', '');
-    map[key] = file;
-  })
-   return map;
+    .forEach(file => {
+      var key = relative(rootSrc, file).replace('.js', '');
+      map[key] = file;
+    })
+  return map;
 }
 
 const appEntry = { app: resolve('./src/main.js') }
