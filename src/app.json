@@ -10,6 +10,7 @@
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#28AC86",
     "navigationBarTitleText": "step",
-    "navigationBarTextStyle": "white"
+    "navigationBarTextStyle": "white",
+    "disableScroll": true
   }
 }
