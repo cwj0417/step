@@ -23,14 +23,17 @@
               </div>
             </div>
           </swiperCell>
+          <div class="empty" v-if="!dids.length">
+            you have nothing done, strive for future please!
+          </div>
         </div>
         <div class="dw-input-wrap">
-          <div class="dwiw-p1">
+          <div class="dwiw-p1" @click="inputFocus = true">
             +
           </div>
           <div class="dwiw-p2"></div>
           <div class="dwiw-p3">
-            <input ref="addInput" :value="addInput" type="text" @change="addDid($event)" placeholder="record what u've done today"
+            <input :focus="inputFocus" ref="addInput" :value="addInput" type="text" @change="addDid($event)" placeholder="record what u've done today"
                    placeholder-style="color: rgba(255, 255, 255, .5);">
           </div>
         </div>
@@ -51,7 +54,8 @@
     data () {
       return {
         curPage: 1,
-        addInput: ''
+        addInput: '',
+        inputFocus: false
       }
     },
     computed: {
@@ -62,13 +66,15 @@
     components: {stepNavigator, swiperCell},
     methods: {
       addDid (e) {
+        this.inputFocus = false
         if (e.target.value.trim()) {
           store.dispatch('did-add-item', e.target.value)
           this.$forceUpdate()
         }
       },
       editDid (item) {
-        console.log('edit', item)
+        store.commit('did-set-detail', item)
+        wx.navigateTo({url: '/pages/didEdit/main'})
       },
       deleteDid (item) {
         store.dispatch('did-delete-item', item._id)
@@ -175,6 +181,11 @@
           &.striped {
             background-color: #fafafa;
           }
+        }
+        .empty {
+          color: #999;
+          padding: 160rpx;
+          font-weight: bold;
         }
       }
       .dw-input-wrap {

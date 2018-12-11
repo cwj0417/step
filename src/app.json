@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/did/main",
+    "pages/didEdit/main",
     "pages/task/main",
     "pages/logs/main"
   ],

@@ -9,7 +9,8 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    dids: []
+    dids: [],
+    didDetail: {}
   },
   mutations: {
     'did-init' (state, dids) {
@@ -21,6 +22,9 @@ const store = new Vuex.Store({
     },
     'did-delete-item' (state, id) {
       state.dids.splice(state.dids.findIndex(item => item._id === id), 1)
+    },
+    'did-set-detail' (state, item) {
+      state.didDetail = item
     }
   },
   actions: {
