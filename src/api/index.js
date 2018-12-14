@@ -15,6 +15,13 @@ const api = {
     },
     remove (id) {
       return dids.doc(id).remove()
+    },
+    update (id, field, value) {
+      return dids.doc(id).update({
+        data: {
+          [field]: value
+        }
+      })
     }
   }
 }

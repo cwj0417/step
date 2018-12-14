@@ -74,6 +74,7 @@
       },
       editDid (item) {
         store.commit('did-set-detail', item)
+        this.closeOthers(-1)
         wx.navigateTo({url: '/pages/didEdit/main'})
       },
       deleteDid (item) {

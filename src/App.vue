@@ -26,6 +26,7 @@
 
   div {
     box-sizing: border-box;
+    font-family: PingFangSC;
   }
 
   /* this rule will be remove */

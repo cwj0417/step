@@ -5,12 +5,12 @@
       <div class="btn-area">
         <div class="btn">
           <div class="btn-wrap" @click="$emit('btn1')">
-            <img src="../assets/images/icon-edit.png" alt="">
+            <img src="../assets/images/icon_edit.png" alt="">
           </div>
         </div>
         <div class="btn">
           <div class="btn-wrap" @click="$emit('btn2')">
-            <img src="../assets/images/icon-delete.png" alt="">
+            <img src="../assets/images/icon_delete.png" alt="">
           </div>
         </div>
       </div>

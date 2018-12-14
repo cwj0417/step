@@ -25,6 +25,18 @@ const store = new Vuex.Store({
     },
     'did-set-detail' (state, item) {
       state.didDetail = item
+    },
+    'did-update-title' (state, {id, title}) {
+      state.dids.find(i => i._id === id).content = title
+      if (state.didDetail._id === id) {
+        state.didDetail.content = title
+      }
+    },
+    'did-update-detail' (state, {id, detail}) {
+      state.dids.find(i => i._id === id).detail = detail
+      if (state.didDetail._id === id) {
+        state.didDetail.detail = detail
+      }
     }
   },
   actions: {
@@ -44,6 +56,18 @@ const store = new Vuex.Store({
       api.dids.remove(id)
         .then(() => {
           store.commit('did-delete-item', id)
+        }, console.error)
+    },
+    'did-update-title' (store, {id, title}) {
+      api.dids.update(id, 'content', title)
+        .then(() => {
+          store.commit('did-update-title', {id, title})
+        }, console.error)
+    },
+    'did-update-detail' (store, {id, detail}) {
+      return api.dids.update(id, 'detail', detail)
+        .then(() => {
+          store.commit('did-update-detail', {id, detail})
         }, console.error)
     }
   }
