@@ -11,6 +11,7 @@
 	"compileType": "miniprogram",
 	"appid": "wx2690749ec3b65a58",
 	"projectname": "step",
+	"libVersion": "2.4.2",
 	"condition": {
 		"search": {
 			"current": -1,

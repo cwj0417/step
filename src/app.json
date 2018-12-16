@@ -3,7 +3,7 @@
     "pages/did/main",
     "pages/didEdit/main",
     "pages/task/main",
-    "pages/logs/main"
+    "pages/search/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

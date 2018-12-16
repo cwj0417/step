@@ -1,7 +1,7 @@
 <template>
-  <div class="did-edit-wrap">
-    <div class="did-edit-main">
-      <div class="did-edit-title">
+  <div class="dids-edit-wrap">
+    <div class="dids-edit-main">
+      <div class="dids-edit-title">
         <div class="det-date">
           {{item.time}}
         </div>
@@ -17,7 +17,7 @@
           </div>
         </div>
       </div>
-      <div class="did-edit-txt">
+      <div class="dids-edit-txt">
         <div class="detxt-display" v-if="!isEditingDetail">
           {{item.detail}}
         </div>
@@ -26,9 +26,9 @@
         </div>
       </div>
     </div>
-    <div class="did-edit-btn">
-      <div class="did-btn" @click="editDetail">修改</div>
-      <div class="did-btn" :class="{active: isEditingDetail}" @click="submit">确定</div>
+    <div class="dids-edit-btn">
+      <div class="dids-btn" @click="editDetail">修改</div>
+      <div class="dids-btn" :class="{active: isEditingDetail}" @click="submit">确定</div>
     </div>
   </div>
 </template>
@@ -61,7 +61,7 @@
       changeTitle (e) {
         let newVal = e.target.value
         if (newVal.trim() && newVal !== this.item.content) {
-          store.dispatch('did-update-title', {id: this.item._id, title: newVal})
+          store.dispatch('dids-update-title', {id: this.item._id, title: newVal})
         }
         this.isEditingTitle = false
         this.titleFocus = false
@@ -71,7 +71,7 @@
           wx.navigateBack({delta: 1})
         } else {
           if (this.inputDetail.trim() && this.inputDetail !== this.item.detail) {
-            store.dispatch('did-update-detail', {id: this.item._id, detail: this.inputDetail})
+            store.dispatch('dids-update-detail', {id: this.item._id, detail: this.inputDetail})
               .then(() => {
                 this.inputDetail = this.item.detail
               }, console.error)
@@ -92,20 +92,20 @@
 <style lang="scss">
   @import "../../styles";
 
-  .did-edit-wrap {
+  .dids-edit-wrap {
     padding: 24rpx;
     width: 750rpx;
     height: 100%;
     display: flex;
     flex-direction: column;
-    .did-edit-main {
+    .dids-edit-main {
       width: 100%;
       flex-grow: 1;
       border-radius: 8rpx;
       box-shadow: 0 0 4rpx #eaeaea;
       display: flex;
       flex-direction: column;
-      .did-edit-title {
+      .dids-edit-title {
         height: 164rpx;
         margin: 24rpx;
         border-bottom: 1rpx solid #eaeaea;
@@ -144,7 +144,7 @@
           }
         }
       }
-      .did-edit-txt {
+      .dids-edit-txt {
         padding: 32rpx 24rpx;
         font-size: 28rpx;
         line-height: 40rpx;
@@ -166,13 +166,13 @@
         }
       }
     }
-    .did-edit-btn {
+    .dids-edit-btn {
       width: 100%;
       height: 200rpx;
       padding: 44rpx 0;
       display: flex;
       justify-content: flex-end;
-      .did-btn {
+      .dids-btn {
         width: 184rpx;
         height: 64rpx;
         border-radius: 32rpx;

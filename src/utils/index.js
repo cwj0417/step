@@ -4,6 +4,7 @@ function formatNumber (n) {
 }
 
 export function formatTime (date) {
+  date = new Date(date * 1000)
   const year = date.getFullYear().toString().substr(2, 2)
   const month = date.getMonth() + 1
   const day = date.getDate()
@@ -15,7 +16,6 @@ export function formatTime (date) {
   const t1 = [year, month, day].map(formatNumber).join('-')
   // const t1 = [year, month, day].map(formatNumber).join('/')
   // const t2 = [hour, minute, second].map(formatNumber).join(':')
-
   return t1
   // return `${t1} ${t2}`
 }

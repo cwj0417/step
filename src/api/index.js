@@ -5,6 +5,7 @@ wx.cloud.init({
 console.info('cloud init')
 const db = wx.cloud.database()
 const dids = db.collection('dids')
+const his = db.collection('history')
 const api = {
   dids: {
     init () {
@@ -22,6 +23,48 @@ const api = {
           [field]: value
         }
       })
+    },
+    search (content) {
+      return dids.where({
+        content: new db.RegExp({
+          regexp: content,
+          options: 'i'
+        })
+      })
+        .get()
+    }
+  },
+  history: {
+    update (target, content) {
+      return his.where({
+        target
+      })
+        .get()
+        .then(res => {
+          if (res.data.length) {
+            his.doc(res.data[0]._id).update({
+              data: {
+                content
+              }
+            })
+          } else {
+            return his.add({
+              data: {
+                target,
+                content
+              }
+            })
+          }
+        }, console.error)
+    },
+    get (target) {
+      return his.where({
+        target
+      })
+        .get()
+        .then(res => {
+          return res.data.length ? res.data[0].content : []
+        })
     }
   }
 }

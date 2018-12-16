@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <div class="main">
-      Task
+      Coming Soon
     </div>
     <step-navigator></step-navigator>
   </div>

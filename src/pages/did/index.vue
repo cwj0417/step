@@ -1,13 +1,20 @@
 <template>
   <div class="wrap">
     <div class="main">
-      <div class="did-todo-nav">
-        <div class="did-toto-nav-item dtni-did" @click="curPage = 1" :class="{active: curPage === 1}">did</div>
-        <div class="did-toto-nav-item dtni-todo" @click="curPage = 2" :class="{active: curPage === 2}">todo</div>
+      <div class="dids-todo-nav">
+        <div class="dids-toto-nav-item dtni-did" @click="curPage = 1" :class="{active: curPage === 1}">did</div>
+        <div class="dids-toto-nav-item dtni-todo" @click="curPage = 2" :class="{active: curPage === 2}">todo</div>
       </div>
-      <div class="did-wrap" v-if="curPage === 1">
+      <div class="dids-wrap" v-if="curPage === 1">
         <div class="dw-filter-and-search">
-          search
+          <div class="dfas-desc">
+            search {{curSearch}}
+          </div>
+          <div class="dfas-icon-wrap">
+            <img src="../../assets/images/icon_search_active.png" alt="" class="dfas-icon" @click="clearSearch" v-if="curSearch">
+            <img src="../../assets/images/icon_search.png" alt="" class="dfas-icon" @click="search" v-else>
+            <img src="../../assets/images/icon_filter.png" alt="" class="dfas-icon">
+          </div>
         </div>
         <div class="dw-content-wrap">
           <swiperCell ref="didItem" v-for="(did, index) of dids" :key="index" :scope="did" :index="index" @btn1="editDid(did)" @btn2="deleteDid(did)" @closeOthers="closeOthers">
@@ -21,6 +28,7 @@
               <div class="dwct-p3">
                 {{scope && scope.time}}
               </div>
+              <img class="dwct-p4" src="../../assets/images/item_corner.png" alt="" v-if="scope && scope.detail">
             </div>
           </swiperCell>
           <div class="empty" v-if="!dids.length">
@@ -38,8 +46,8 @@
           </div>
         </div>
       </div>
-      <div class="todo-wrap" v-if="curPage === 2">
-        todo
+      <div class="todos-wrap" v-if="curPage === 2">
+        Coming Soon
       </div>
     </div>
     <step-navigator></step-navigator>
@@ -61,6 +69,9 @@
     computed: {
       dids () {
         return store.state.dids
+      },
+      curSearch () {
+        return store.state.didsCurSearch
       }
     },
     components: {stepNavigator, swiperCell},
@@ -68,17 +79,17 @@
       addDid (e) {
         this.inputFocus = false
         if (e.target.value.trim()) {
-          store.dispatch('did-add-item', e.target.value)
+          store.dispatch('dids-add-item', e.target.value)
           this.$forceUpdate()
         }
       },
       editDid (item) {
-        store.commit('did-set-detail', item)
+        store.commit('dids-set-detail', item)
         this.closeOthers(-1)
         wx.navigateTo({url: '/pages/didEdit/main'})
       },
       deleteDid (item) {
-        store.dispatch('did-delete-item', item._id)
+        store.dispatch('dids-delete-item', item._id)
         this.$refs.didItem.forEach(vm => {
           if (vm.isBtnShown) {
             vm.swipeBack()
@@ -91,6 +102,12 @@
             vm.swipeBack()
           }
         })
+      },
+      search () {
+        wx.navigateTo({url: '/pages/search/main?target=dids'})
+      },
+      clearSearch () {
+        store.dispatch('search-clear', 'dids')
       }
     },
     mounted () {
@@ -104,14 +121,14 @@
   @import "../../styles";
 
   .main {
-    .did-todo-nav {
+    .dids-todo-nav {
       width: 750rpx;
       height: 106rpx;
       display: flex;
       position:absolute;
       top: 0;
       z-index: 1;
-      .did-toto-nav-item {
+      .dids-toto-nav-item {
         text-align: center;
         width: 90rpx;
         height: 106rpx;
@@ -130,7 +147,7 @@
         }
       }
     }
-    .did-wrap {
+    .dids-wrap {
       flex-grow: 1;
       position: relative;
       height:100%;
@@ -144,6 +161,18 @@
         position: absolute;
         top: 106rpx;
         z-index: 1;
+        line-height: 40rpx;
+        display: flex;
+        .dfas-desc {
+          width: 594rpx;
+        }
+        .dfas-icon-wrap {
+          .dfas-icon {
+            width: 30rpx;
+            height: 30rpx;
+            margin-left: 24rpx;
+          }
+        }
       }
       .dw-content-wrap {
         overflow-x: hidden;
@@ -177,7 +206,11 @@
             text-align: right;
           }
           .dwct-p4 {
-
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 32rpx;
+            height: 28rpx;
           }
           &.striped {
             background-color: #fafafa;
@@ -223,8 +256,11 @@
         }
       }
     }
-    .todo-wrap {
+    .todos-wrap {
       flex-grow: 1;
+      position: relative;
+      height:100%;
+      padding-top: 106rpx;
     }
   }
 </style>
