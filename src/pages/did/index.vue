@@ -2,37 +2,43 @@
   <div class="wrap">
     <div class="main">
       <div class="dids-todo-nav">
-        <div class="dids-toto-nav-item dtni-did" @click="curPage = 1" :class="{active: curPage === 1}">did</div>
-        <div class="dids-toto-nav-item dtni-todo" @click="curPage = 2" :class="{active: curPage === 2}">todo</div>
+        <div class="dids-todo-nav-item" @click="setPage('done')" :class="{active: curPage === 'done'}">did</div>
+        <div class="dids-todo-nav-item" @click="setPage('active')" :class="{active: curPage === 'active'}">todo</div>
       </div>
-      <div class="dids-wrap" v-if="curPage === 1">
+      <div class="dids-wrap">
         <div class="dw-filter-and-search">
           <div class="dfas-desc">
-            search {{curSearch}}
+            {{curSearch}}
           </div>
           <div class="dfas-icon-wrap">
             <img src="../../assets/images/icon_search_active.png" alt="" class="dfas-icon" @click="clearSearch" v-if="curSearch">
             <img src="../../assets/images/icon_search.png" alt="" class="dfas-icon" @click="search" v-else>
-            <img src="../../assets/images/icon_filter.png" alt="" class="dfas-icon">
+            <!--<img src="../../assets/images/icon_filter.png" alt="" class="dfas-icon">-->
           </div>
         </div>
         <div class="dw-content-wrap">
-          <swiperCell ref="didItem" v-for="(did, index) of dids" :key="index" :scope="did" :index="index" @btn1="editDid(did)" @btn2="deleteDid(did)" @closeOthers="closeOthers">
+          <swiperCell ref="didItem" v-for="(todo, index) of todos" :key="index" :page="curPage" :scope="todo" :index="index" @btn1="editDid(todo)" @btn2="deleteDid(todo)" @btn3="toggleStick(todo)" @closeOthers="closeOthers">
             <div class="dw-content-item" :class="{striped: index % 2 === 1}">
-              <div class="dwct-p1">
-                <img src="../../assets/images/did_item_indicator.png" alt="">
+              <div class="dwct-p1" @click="toggleDone(todo)">
+                <img src="../../assets/images/did_item_indicator.png" alt="" v-if="scope && scope.done">
+                <img src="../../assets/images/did_item_indicator_inactive.png" alt="" v-else>
               </div>
               <div class="dwct-p2">
                 {{scope && scope.content}}
               </div>
               <div class="dwct-p3">
-                {{scope && scope.time}}
+                {{scope && scope.end}}
               </div>
               <img class="dwct-p4" src="../../assets/images/item_corner.png" alt="" v-if="scope && scope.detail">
             </div>
           </swiperCell>
-          <div class="empty" v-if="!dids.length">
-            you have nothing done, strive for future please!
+          <div class="empty" v-if="!todos.length">
+            <template v-if="curPage === 'active'">
+              all todos has been done!
+            </template>
+            <template v-if="curPage === 'done'">
+              you have nothing done, strive for future please!
+            </template>
           </div>
         </div>
         <div class="dw-input-wrap">
@@ -41,13 +47,10 @@
           </div>
           <div class="dwiw-p2"></div>
           <div class="dwiw-p3">
-            <input :focus="inputFocus" ref="addInput" :value="addInput" type="text" @change="addDid($event)" placeholder="record what u've done today"
+            <input :focus="inputFocus" ref="addInput" :value="addInput" type="text" @change="addDid($event)" :placeholder="placeholder"
                    placeholder-style="color: rgba(255, 255, 255, .5);">
           </div>
         </div>
-      </div>
-      <div class="todos-wrap" v-if="curPage === 2">
-        Coming Soon
       </div>
     </div>
     <step-navigator></step-navigator>
@@ -61,17 +64,21 @@
   export default {
     data () {
       return {
-        curPage: 1,
+        curPage: 'done',
         addInput: '',
         inputFocus: false
       }
     },
     computed: {
-      dids () {
-        return store.state.dids
+      todos () {
+        let t = store.state.todos.filter(i => i.done === (this.curPage === 'done'))
+        return [...t.filter(i => i.stick), ...t.filter(i => !i.stick)]
       },
       curSearch () {
-        return store.state.didsCurSearch
+        return this.curPage === 'done' ? store.state.didsCurSearch : store.state.todosCurSearch
+      },
+      placeholder () {
+        return this.curPage === 'done' ? `record what u've done today` : `record what u plan to do`
       }
     },
     components: {stepNavigator, swiperCell},
@@ -79,22 +86,25 @@
       addDid (e) {
         this.inputFocus = false
         if (e.target.value.trim()) {
-          store.dispatch('dids-add-item', e.target.value)
+          store.dispatch('todo-add-item', {
+            content: e.target.value,
+            done: this.curPage === 'done'
+          })
           this.$forceUpdate()
         }
       },
       editDid (item) {
-        store.commit('dids-set-detail', item)
+        store.commit('todo-set-detail', item)
         this.closeOthers(-1)
         wx.navigateTo({url: '/pages/didEdit/main'})
       },
       deleteDid (item) {
-        store.dispatch('dids-delete-item', item._id)
-        this.$refs.didItem.forEach(vm => {
-          if (vm.isBtnShown) {
-            vm.swipeBack()
-          }
-        })
+        store.dispatch('todo-delete-item', item._id)
+        this.closeOthers(-1)
+      },
+      toggleStick (item) {
+        store.dispatch('todo-toggle-stick', item)
+        this.closeOthers(-1)
       },
       closeOthers (index) {
         this.$refs.didItem.forEach(vm => {
@@ -104,15 +114,30 @@
         })
       },
       search () {
-        wx.navigateTo({url: '/pages/search/main?target=dids'})
+        wx.navigateTo({url: `/pages/search/main?target=${this.curPage === 'done' ? 'dids' : 'todos'}`})
       },
       clearSearch () {
-        store.dispatch('search-clear', 'dids')
+        store.dispatch('search-clear', this.curPage === 'done' ? 'dids' : 'todos')
+      },
+      setPage (page) {
+        this.curPage = page
+        store.dispatch('todo-init')
+        store.commit('search-set-curSearch', {target: 'dids', content: ''})
+        store.commit('search-set-curSearch', {target: 'todos', content: ''})
+        this.$refs.didItem.forEach(vm => {
+          if (vm.isBtnShown) {
+            vm.swipeBack()
+          }
+        })
+      },
+      toggleDone (item) {
+        this.setPage(item.done ? 'active' : 'done')
+        store.dispatch('todo-toggle-done', item)
       }
     },
     mounted () {
       wx.setNavigationBarTitle({
-        title: 'did'
+        title: 'todo'
       })
     }
   }
@@ -128,19 +153,13 @@
       position:absolute;
       top: 0;
       z-index: 1;
-      .dids-toto-nav-item {
+      .dids-todo-nav-item {
         text-align: center;
-        width: 90rpx;
+        width: 104rpx;
         height: 106rpx;
-        margin: 0 143rpx;
+        margin: 0 135rpx;
         color: #666;
         line-height: 106rpx;
-        &.dtni-did {
-          margin: 0 73rpx 0 212rpx;
-        }
-        &.dtni-todo {
-          margin: 0 212rpx 0 73rpx;
-        }
         &.active {
           color: $vi_base;
           border-bottom: 8rpx solid $vi_base;
@@ -164,7 +183,8 @@
         line-height: 40rpx;
         display: flex;
         .dfas-desc {
-          width: 594rpx;
+          /*width: 594rpx;*/
+          width: 644rpx;
         }
         .dfas-icon-wrap {
           .dfas-icon {

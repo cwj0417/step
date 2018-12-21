@@ -3,7 +3,7 @@
     <div class="dids-edit-main">
       <div class="dids-edit-title">
         <div class="det-date">
-          {{item.time}}
+          {{item.end}}
         </div>
         <div class="det-title">
           <div class="dett-display" v-if="!isEditingTitle">
@@ -46,7 +46,7 @@
     },
     computed: {
       item () {
-        return store.state.didDetail
+        return store.state.detail
       }
     },
     methods: {
@@ -61,7 +61,7 @@
       changeTitle (e) {
         let newVal = e.target.value
         if (newVal.trim() && newVal !== this.item.content) {
-          store.dispatch('dids-update-title', {id: this.item._id, title: newVal})
+          store.dispatch('todo-update-title', {id: this.item._id, title: newVal})
         }
         this.isEditingTitle = false
         this.titleFocus = false
@@ -71,7 +71,7 @@
           wx.navigateBack({delta: 1})
         } else {
           if (this.inputDetail.trim() && this.inputDetail !== this.item.detail) {
-            store.dispatch('dids-update-detail', {id: this.item._id, detail: this.inputDetail})
+            store.dispatch('todo-update-detail', {id: this.item._id, detail: this.inputDetail})
               .then(() => {
                 this.inputDetail = this.item.detail
               }, console.error)

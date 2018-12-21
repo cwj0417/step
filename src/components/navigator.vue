@@ -3,7 +3,7 @@
     <div @click="to('/pages/did/main')" class="nav-item">
       <div class="nav-name">
         <img src="../assets/images/nav_did.png">
-        did
+        todo
       </div>
     </div>
     <div @click="to('/pages/task/main')" class="nav-item">

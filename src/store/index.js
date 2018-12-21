@@ -9,49 +9,69 @@ Vue.use(Vuex)
 
 const didMap = item => {
   delete item._openid
-  item.time = formatTime(item.time)
+  item.start = formatTime(item.start)
+  item.end = formatTime(item.end)
   return item
 }
 
 const store = new Vuex.Store({
   state: {
-    dids: [],
-    didDetail: {},
+    todos: [],
+    detail: {},
     searchHistory: {
       dids: [],
       todos: []
     },
-    didsCurSearch: ''
+    didsCurSearch: '',
+    todosCurSearch: ''
   },
   mutations: {
-    'dids-init' (state, dids) {
-      state.dids = dids
+    'todo-init' (state, todos) {
+      state.todos = todos
     },
-    'dids-add-item' (state, item) {
-      item.time = formatTime(item.time)
-      state.dids.unshift(item)
+    'todo-add-item' (state, item) {
+      item.start = formatTime(item.start)
+      item.end = formatTime(item.end)
+      state.todos.unshift(item)
     },
-    'dids-delete-item' (state, id) {
-      state.dids.splice(state.dids.findIndex(item => item._id === id), 1)
+    'todo-delete-item' (state, id) {
+      state.todos.splice(state.todos.findIndex(item => item._id === id), 1)
     },
-    'dids-set-detail' (state, item) {
-      state.didDetail = item
+    'todo-set-detail' (state, item) {
+      state.detail = item
     },
-    'dids-update-title' (state, {id, title}) {
-      state.dids.find(i => i._id === id).content = title
-      if (state.didDetail._id === id) {
-        state.didDetail.content = title
+    'todo-update-title' (state, {id, title}) {
+      state.todos.find(i => i._id === id).content = title
+      if (state.detail._id === id) {
+        state.detail.content = title
       }
     },
-    'dids-update-detail' (state, {id, detail}) {
-      state.dids.find(i => i._id === id).detail = detail
-      if (state.didDetail._id === id) {
-        state.didDetail.detail = detail
+    'todo-update-detail' (state, {id, detail}) {
+      state.todos.find(i => i._id === id).detail = detail
+      if (state.detail._id === id) {
+        state.detail.detail = detail
+      }
+    },
+    'todo-toggle-done' (state, item) {
+      state.todos.find(i => i._id === item._id).done = !item.done
+      if (state.detail._id === item._id) {
+        state.detail.done = !item.done
+      }
+    },
+    'todo-toggle-stick' (state, item) {
+      state.todos.find(i => i._id === item._id).stick = !item.stick
+      if (state.detail._id === item._id) {
+        state.detail.stick = !item.stick
+      }
+    },
+    'todo-update-end' (state, id) {
+      state.todos.find(i => i._id === id).end = formatTime(Math.round(Date.now() / 1000))
+      if (state.detail._id === id) {
+        state.detail.end = formatTime(Math.round(Date.now() / 1000))
       }
     },
     'search-set-curSearch' (state, {target, content}) {
       state[`${target}CurSearch`] = content
-      console.log(state)
     },
     'search-add-to-history' (state, {target, content}) {
       const i = state.searchHistory[target].indexOf(content)
@@ -73,15 +93,15 @@ const store = new Vuex.Store({
   },
   actions: {
     'search-clear' ({commit, dispatch}, target) {
-      dispatch(`${target}-init`)
+      dispatch(`todo-init`)
       commit('search-set-curSearch', {target, content: ''})
     },
     'search-action' ({state, commit}, {target, content}) {
       commit('search-add-to-history', {target, content})
       api.history.update(target, state.searchHistory[target])
-      api[target].search(content)
+      api.todo.search({target, content})
         .then(res => {
-          commit('dids-init', res.data.map(didMap))
+          commit('todo-init', res.data.map(didMap))
           commit('search-set-curSearch', {target, content})
         }, console.error)
     },
@@ -99,48 +119,69 @@ const store = new Vuex.Store({
       commit('search-history-set', {target, content: []})
       api.history.update(target, [])
     },
-    'dids-init' ({commit}) {
-      api.dids.init()
+    'todo-init' ({commit}) {
+      api.todo.init()
         .then(res => {
           res = res.data.map(didMap)
-          commit('dids-init', res)
+          commit('todo-init', res)
         })
     },
-    'dids-add-item' ({commit}, item) {
+    'todo-add-item' ({commit}, {content, done}) {
       const document = {
-        time: Math.round(Date.now() / 1000),
-        content: item,
-        detail: ''
+        start: Math.round(Date.now() / 1000),
+        end: Math.round(Date.now() / 1000),
+        content,
+        detail: '',
+        stick: false,
+        done
       }
-      api.dids.add(document)
+      api.todo.add(document)
         .then(res => {
           document._id = res._id
-          commit('dids-add-item', document)
+          commit('todo-add-item', document)
         }, console.error)
     },
-    'dids-delete-item' ({commit}, id) {
-      api.dids.remove(id)
+    'todo-delete-item' ({commit}, id) {
+      api.todo.remove(id)
         .then(() => {
-          commit('dids-delete-item', id)
+          commit('todo-delete-item', id)
         }, console.error)
     },
-    'dids-update-title' ({commit}, {id, title}) {
-      api.dids.update(id, 'content', title)
+    'todo-update-title' ({commit}, {id, title}) {
+      api.todo.update(id, 'content', title)
         .then(() => {
-          commit('dids-update-title', {id, title})
+          commit('todo-update-title', {id, title})
         }, console.error)
     },
-    'dids-update-detail' ({commit}, {id, detail}) {
-      return api.dids.update(id, 'detail', detail)
+    'todo-update-detail' ({commit}, {id, detail}) {
+      return api.todo.update(id, 'detail', detail)
         .then(() => {
-          commit('dids-update-detail', {id, detail})
+          commit('todo-update-detail', {id, detail})
+        }, console.error)
+    },
+    'todo-toggle-done' ({commit}, item) {
+      return api.todo.update(item._id, 'done', !item.done)
+        .then(() => {
+          commit('todo-toggle-done', item)
+          if (!item.done) {
+            return api.todo.update(item._id, 'end', Math.round(Date.now() / 1000))
+              .then(() => {
+                commit('todo-update-end', item._id)
+              }, console.error)
+          }
+        }, console.error)
+    },
+    'todo-toggle-stick' ({commit}, item) {
+      return api.todo.update(item._id, 'stick', !item.stick)
+        .then(() => {
+          commit('todo-toggle-stick', item)
         }, console.error)
     }
   }
 })
 
 const init = () => {
-  store.dispatch('dids-init')
+  store.dispatch('todo-init')
 }
 
 init()

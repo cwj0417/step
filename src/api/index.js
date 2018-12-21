@@ -4,42 +4,72 @@ wx.cloud.init({
 })
 console.info('cloud init')
 const db = wx.cloud.database()
-const dids = db.collection('dids')
+const todo = db.collection('todo')
 const his = db.collection('history')
-const api = {
-  dids: {
+
+const getAll = function (handle, merge = []) {
+  if (!handle.get) {
+    console.error('can not get data from', handle)
+    return
+  }
+  return handle.skip(merge.length).get()
+    .then(res => {
+      let t = {
+        ...res,
+        data: [
+          ...merge,
+          ...res.data
+        ]
+      }
+      if (res.data.length < 20) {
+        return t
+      } else {
+        return getAll(handle, t.data)
+      }
+    }, console.error)
+}
+let api = {
+  todo: {
     init () {
-      return dids.orderBy('time', 'desc').get()
+      return getAll(
+        todo
+          .orderBy('done', 'asc')
+          .orderBy('start', 'desc')
+          .orderBy('end', 'desc')
+      )
     },
     add (data) {
-      return dids.add({data})
+      return todo.add({data})
     },
     remove (id) {
-      return dids.doc(id).remove()
+      return todo.doc(id).remove()
     },
     update (id, field, value) {
-      return dids.doc(id).update({
+      return todo.doc(id).update({
         data: {
           [field]: value
         }
       })
     },
-    search (content) {
-      return dids.where({
-        content: new db.RegExp({
-          regexp: content,
-          options: 'i'
+    search ({target, content}) {
+      return getAll(
+        todo.where({
+          content: new db.RegExp({
+            regexp: content,
+            options: 'i'
+          }),
+          done: target === 'dids'
         })
-      })
-        .get()
+      )
     }
   },
   history: {
     update (target, content) {
-      return his.where({
-        target
-      })
-        .get()
+      return getAll(
+        his.where({
+          target
+        })
+      )
         .then(res => {
           if (res.data.length) {
             his.doc(res.data[0]._id).update({
@@ -58,14 +88,35 @@ const api = {
         }, console.error)
     },
     get (target) {
-      return his.where({
-        target
-      })
-        .get()
+      return getAll(
+        his.where({
+          target
+        })
+      )
         .then(res => {
           return res.data.length ? res.data[0].content : []
         })
     }
   }
 }
+
+const blandLoading = function (list) {
+  for (let [name, fn] of Object.entries(api[list])) {
+    api[list][name] = function (...args) {
+      wx.showNavigationBarLoading()
+      return fn(...args)
+        .then(res => {
+          wx.hideNavigationBarLoading()
+          return res
+        }, err => {
+          wx.hideNavigationBarLoading()
+          return Promise.reject(err)
+        })
+    }
+  }
+}
+
+blandLoading('todo')
+blandLoading('history')
+
 export default api

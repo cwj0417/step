@@ -3,9 +3,14 @@
     <div class="swiper-slot" @touchstart="touchS" @touchmove="touchM" @touchend="touchE" :style="{left: left + 'rpx', transition: isInTouch ? 'all .05s' : 'all .25s ease-in-out'}">
       <slot></slot>
       <div class="btn-area">
-        <div class="btn">
+        <div class="btn" v-if="page === 'done'">
           <div class="btn-wrap" @click="$emit('btn1')">
             <img src="../assets/images/icon_edit.png" alt="">
+          </div>
+        </div>
+        <div class="btn" v-else>
+          <div class="btn-wrap" @click="$emit('btn3')">
+            <img src="../assets/images/icon_stick.png" alt="">
           </div>
         </div>
         <div class="btn">
@@ -19,7 +24,7 @@
 </template>
 <script>
   export default {
-    props: ['scope', 'index'],
+    props: ['scope', 'index', 'page'],
     data () {
       return {
         startX: 0,
