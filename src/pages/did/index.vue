@@ -18,7 +18,7 @@
         </div>
         <div class="dw-content-wrap">
           <swiperCell ref="didItem" v-for="(todo, index) of todos" :key="index" :page="curPage" :scope="todo" :index="index" @btn1="editDid(todo)" @btn2="deleteDid(todo)" @btn3="toggleStick(todo)" @closeOthers="closeOthers">
-            <div class="dw-content-item" :class="{striped: index % 2 === 1}">
+            <div class="dw-content-item" :class="{striped: index % 2 === 1}" @click="todo.detail && editDid(todo)">
               <div class="dwct-p1" @click="toggleDone(todo)">
                 <img src="../../assets/images/did_item_indicator.png" alt="" v-if="scope && scope.done">
                 <img src="../../assets/images/did_item_indicator_inactive.png" alt="" v-else>
