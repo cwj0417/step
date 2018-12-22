@@ -30,6 +30,7 @@
                 {{scope && scope.end}}
               </div>
               <img class="dwct-p4" src="../../assets/images/item_corner.png" alt="" v-if="scope && scope.detail">
+              <img class="dwct-p4" src="../../assets/images/item_stick.png" alt="" v-if="scope && scope.stick">
             </div>
           </swiperCell>
           <div class="empty" v-if="!todos.length">
