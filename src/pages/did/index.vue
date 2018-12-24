@@ -16,8 +16,8 @@
             <!--<img src="../../assets/images/icon_filter.png" alt="" class="dfas-icon">-->
           </div>
         </div>
-        <div class="dw-content-wrap" :style="{'overflow-y': wrapScroll}">
-          <swiperCell ref="didItem" v-for="(todo, index) of todos" @scrollenable="wrapScroll = 'scroll'" @scrolldisable="wrapScroll = 'hidden'" :key="index" :page="curPage" :scope="todo" :index="index" @btn1="editDid(todo)" @btn2="deleteDid(todo)" @btn3="toggleStick(todo)" @closeOthers="closeOthers">
+        <scroll-view :scroll-y="wrapScroll" class="dw-content-wrap">
+          <swiperCell ref="didItem" v-for="(todo, index) of todos" @scrollenable="wrapScroll = true" @scrolldisable="wrapScroll = false" :key="index" :page="curPage" :scope="todo" :index="index" @btn1="editDid(todo)" @btn2="deleteDid(todo)" @btn3="toggleStick(todo)" @closeOthers="closeOthers">
             <div class="dw-content-item" :class="{striped: index % 2 === 1}" @click="todo.detail && editDid(todo)">
               <div class="dwct-p1" @click="toggleDone(todo)">
                 <img src="../../assets/images/did_item_indicator.png" alt="" v-if="scope && scope.done">
@@ -41,7 +41,7 @@
               you have nothing done, strive for future please!
             </template>
           </div>
-        </div>
+        </scroll-view>
         <div class="dw-input-wrap">
           <div class="dwiw-p1" @click="inputFocus = true">
             +
@@ -68,7 +68,7 @@
         curPage: 'done',
         addInput: '',
         inputFocus: false,
-        wrapScroll: 'scroll'
+        wrapScroll: true
       }
     },
     computed: {
@@ -197,8 +197,7 @@
         }
       }
       .dw-content-wrap {
-        overflow-x: hidden;
-        overflow-y: scroll;
+        box-sizing: border-box;
         height: 100%;
         padding: 60rpx 0 94rpx;
         .dw-content-item {
