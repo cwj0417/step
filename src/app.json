@@ -7,9 +7,9 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#28AC86",
+    "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "step",
-    "navigationBarTextStyle": "white",
+    "navigationBarTextStyle": "black",
     "disableScroll": true
   }
 }

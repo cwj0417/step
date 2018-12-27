@@ -19,10 +19,10 @@
       </div>
       <div class="dids-edit-txt">
         <div class="detxt-display" v-if="!isEditingDetail">
-          {{item.detail}}
+          <text>{{item.detail}}</text>
         </div>
         <div class="detxt-input" v-if="isEditingDetail">
-          <textarea :auto-height="true" placeholder="输入备注(少于1000字)" v-model="inputDetail" :focus="taFocus" placeholder-style="line-height: 40rpx;" ></textarea>
+          <textarea maxlength="1000" :auto-height="true" placeholder="输入备注(少于1000字)" v-model="inputDetail" :focus="taFocus" placeholder-style="line-height: 40rpx;" ></textarea>
         </div>
       </div>
     </div>
@@ -107,7 +107,7 @@
       flex-direction: column;
       .dids-edit-title {
         height: 164rpx;
-        margin: 24rpx;
+        margin: 24rpx 24rpx 0;
         border-bottom: 1rpx solid #eaeaea;
         .det-date {
           padding-top: 24rpx;
@@ -155,13 +155,16 @@
         .detxt-display {
           width: 100%;
           flex-grow: 1;
+          word-break: break-all;
+          word-wrap: break-word;
         }
         .detxt-input {
           width: 100%;
           flex-grow: 1;
+          word-break: break-all;
+          word-wrap: break-word;
           textarea {
             width: 100%;
-            height: 100%;
           }
         }
       }

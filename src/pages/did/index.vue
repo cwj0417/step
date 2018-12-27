@@ -42,14 +42,19 @@
             </template>
           </div>
         </scroll-view>
-        <div class="dw-input-wrap">
-          <div class="dwiw-p1" @click="inputFocus = true">
+        <div class="dw-input-wrap" :style="{bottom: inputBottom}" @click="inputFocus = true">
+          <div class="dwiw-p1">
             +
           </div>
           <div class="dwiw-p2"></div>
           <div class="dwiw-p3">
-            <input :focus="inputFocus" ref="addInput" :value="addInput" type="text" @change="addDid($event)" :placeholder="placeholder"
-                   placeholder-style="color: rgba(255, 255, 255, .5);">
+            <input :focus="inputFocus" :value="addInput" type="text" @change="addDid($event)"
+                   v-show="inputFocus"
+                   @focus="addInputFocus"
+                   :adjust-position="false">
+            <div class="placeholder" v-show="!inputFocus">
+              {{placeholder}}
+            </div>
           </div>
         </div>
       </div>
@@ -68,7 +73,8 @@
         curPage: 'done',
         addInput: '',
         inputFocus: false,
-        wrapScroll: true
+        wrapScroll: true,
+        inputBottom: '98rpx'
       }
     },
     computed: {
@@ -86,6 +92,7 @@
     components: {stepNavigator, swiperCell},
     methods: {
       addDid (e) {
+        this.inputBottom = '98rpx'
         this.inputFocus = false
         if (e.target.value.trim()) {
           store.dispatch('todo-add-item', {
@@ -122,6 +129,7 @@
         store.dispatch('search-clear', this.curPage === 'done' ? 'dids' : 'todos')
       },
       setPage (page) {
+        this.inputFocus = false
         this.curPage = page
         store.dispatch('todo-init')
         store.commit('search-set-curSearch', {target: 'dids', content: ''})
@@ -135,6 +143,11 @@
       toggleDone (item) {
         this.setPage(item.done ? 'active' : 'done')
         store.dispatch('todo-toggle-done', item)
+      },
+      addInputFocus (e) {
+        let mp = e.mp
+        let kbh = mp.detail.height
+        this.inputBottom = kbh + 'px'
       }
     },
     mounted () {
@@ -170,7 +183,6 @@
     }
     .dids-wrap {
       flex-grow: 1;
-      position: relative;
       height:100%;
       padding-top: 106rpx;
       .dw-filter-and-search {
@@ -212,6 +224,8 @@
             img {
               width: 30rpx;
               height: 30rpx;
+              display: block;
+              margin-top: 10rpx;
             }
           }
           .dwct-p2 {
@@ -248,13 +262,12 @@
         width: 750rpx;
         background-color: $vi_base;
         position: absolute;
-        bottom: 0;
         padding: 24rpx 24rpx 25rpx 24rpx;
         display: flex;
         .dwiw-p1 {
           width: 35rpx;
           height: 35rpx;
-          margin: 4rpx 23rpx 4rpx 0;
+          margin: 5rpx 23rpx 5rpx 0;
           color: #fff;
           font-size: 60rpx;
           line-height: 23rpx;
@@ -273,6 +286,11 @@
             height: 45rpx;
             min-height: 45rpx;
             color: #fff;
+          }
+          .placeholder {
+            color: rgba(255, 255, 255, .5);
+            line-height: 45rpx;
+            height: 45rpx;
           }
         }
       }

@@ -42,6 +42,7 @@
   page {
     height: 100%;
     overflow: hidden;
+    border-top: 0.5rpx solid #d8d8d8;
   }
 
   .wrap {
