@@ -9,7 +9,11 @@ export default {
       state.tasks.push(task)
     },
     'task-update-record' (state, {id, field, value}) {
-      state.tasks.find(i => i._id === id)[field] = value
+      let index = state.tasks.findIndex(i => i._id === id)
+      state.tasks.splice(index, 1, {
+        ...state.tasks[index],
+        [field]: value
+      })
     }
   },
   actions: {

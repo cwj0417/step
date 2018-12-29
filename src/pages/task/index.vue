@@ -8,8 +8,8 @@
       </div>
       <scroll-view class="task-list" scroll-y>
         <div class="task-item" v-for="(task, index) in list" :key="index">
-          <div class="ti-indicator">
-            <div class="ti-indicator-wrap" @click="toggleDone(task)">
+          <div class="ti-indicator" @click="toggleDone(task)">
+            <div class="ti-indicator-wrap">
               <img src="../../assets/images/did_item_indicator.png" alt="" v-if="task && task.todayDone">
               <img src="../../assets/images/did_item_indicator_inactive.png" alt="" v-else>
             </div>
@@ -41,29 +41,15 @@
   export default {
     data () {
       return {
-        curDate: formatTime2(),
-        list: []
+        curDate: formatTime2()
       }
     },
-    methods: {
-      toggleDone (task) {
+    computed: {
+      list () {
         let day = new Date().getDay()
         day -= 1
         if (day === -1) day = 6
-        let value = task.record
-        value[task.range.indexOf(day)] = task.todayDone ? -1 : 1
-        store.dispatch('task-update-record', {
-          id: task._id,
-          field: 'record',
-          value
-        })
-        this.getList()
-      },
-      getList () {
-        let day = new Date().getDay()
-        day -= 1
-        if (day === -1) day = 6
-        this.list = store.state.tasks
+        return store.state.tasks
           .filter(i => i.range.indexOf(day) > -1)
           .map(task => {
             let cr = {} // for computed record
@@ -83,9 +69,22 @@
           })
       }
     },
+    methods: {
+      toggleDone (task) {
+        let day = new Date().getDay()
+        day -= 1
+        if (day === -1) day = 6
+        let value = task.record
+        value[task.range.indexOf(day)] = task.todayDone ? -1 : 1
+        store.dispatch('task-update-record', {
+          id: task._id,
+          field: 'record',
+          value
+        })
+      }
+    },
     components: {stepNavigator},
     mounted () {
-      this.getList()
       wx.setNavigationBarTitle({
         title: '每周任务'
       })
