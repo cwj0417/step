@@ -11,7 +11,7 @@
     </div>
     <div class="search-history-indicator">
       <div class="search-history-txt">
-        search history
+        搜索历史
       </div>
       <div class="search-history-clear" @click="clearHis">
         <img src="../../assets/images/icon_trash.png" alt="">

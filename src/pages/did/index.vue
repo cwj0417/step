@@ -2,8 +2,8 @@
   <div class="wrap">
     <div class="main">
       <div class="dids-todo-nav">
-        <div class="dids-todo-nav-item" @click="setPage('done')" :class="{active: curPage === 'done'}">did</div>
-        <div class="dids-todo-nav-item" @click="setPage('active')" :class="{active: curPage === 'active'}">todo</div>
+        <div class="dids-todo-nav-item" @click="setPage('done')" :class="{active: curPage === 'done'}">完成</div>
+        <div class="dids-todo-nav-item" @click="setPage('active')" :class="{active: curPage === 'active'}">待做</div>
       </div>
       <div class="dids-wrap">
         <div class="dw-filter-and-search">
@@ -35,10 +35,10 @@
           </swiperCell>
           <div class="empty" v-if="!todos.length">
             <template v-if="curPage === 'active'">
-              all todos has been done!
+              您已做完所有事项
             </template>
             <template v-if="curPage === 'done'">
-              you have nothing done, strive for future please!
+              暂无完成任务事项
             </template>
           </div>
         </scroll-view>
@@ -86,7 +86,7 @@
         return this.curPage === 'done' ? store.state.didsCurSearch : store.state.todosCurSearch
       },
       placeholder () {
-        return this.curPage === 'done' ? `record what u've done today` : `record what u plan to do`
+        return this.curPage === 'done' ? `输入今天完成了什么` : `输入打算做些什么`
       }
     },
     components: {stepNavigator, swiperCell},
@@ -152,7 +152,7 @@
     },
     mounted () {
       wx.setNavigationBarTitle({
-        title: 'todo'
+        title: '待做事项'
       })
     }
   }

@@ -68,7 +68,7 @@
           padding-top: 10rpx;
           margin: 0 auto;
           color: $vi_base;
-          width: 54rpx;
+          width: 80rpx;
           line-height: 28rpx;
           font-size: 20rpx;
           text-align: center;

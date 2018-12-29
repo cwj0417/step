@@ -6,6 +6,8 @@ console.info('cloud init')
 const db = wx.cloud.database()
 const todo = db.collection('todo')
 const his = db.collection('history')
+const tasks = db.collection('task-list')
+const taskRecord = db.collection('task-records')
 
 const getAll = function (handle, merge = []) {
   if (!handle.get) {
@@ -29,6 +31,52 @@ const getAll = function (handle, merge = []) {
     }, console.error)
 }
 let api = {
+  task: {
+    init () {
+      return getAll(
+        tasks
+      )
+    },
+    updateRecord (taskId, week, field, value) {
+      week = week.join('/')
+      return taskRecord.where({
+        task_id: taskId,
+        week
+      })
+        .get()
+        .then(res => {
+          return taskRecord.doc(res.data[0]._id)
+            .update({
+              data: {
+                [field]: value
+              }
+            })
+        }, console.error)
+    },
+    getRecord (task, week, length) {
+      week = week.join('/')
+      return getAll(
+        taskRecord.where({
+          task_id: task,
+          week
+        })
+      )
+        .then(res => {
+          if (res.data.length) {
+            return res.data[0].record
+          } else {
+            return taskRecord.add({
+              data: {
+                task_id: task,
+                week,
+                record: Array.from({length}).map(() => 0)
+              }
+            })
+              .then(() => Array.from({length}).map(() => 0), console.error)
+          }
+        }, console.error)
+    }
+  },
   todo: {
     init () {
       return getAll(
@@ -118,5 +166,6 @@ const blandLoading = function (list) {
 
 blandLoading('todo')
 blandLoading('history')
+blandLoading('task')
 
 export default api

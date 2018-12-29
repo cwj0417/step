@@ -20,6 +20,28 @@ export function formatTime (date) {
   // return `${t1} ${t2}`
 }
 
+export const getWeek = function (date = new Date()) {
+  const now = new Date(date)
+  const firstDay = new Date(new Date(date).setMonth(0, 1))
+  let firstDayOfWeek = firstDay.getDay()
+  if (firstDayOfWeek === 0 || firstDayOfWeek === 1) firstDayOfWeek += 7
+  const diffDay = (now.valueOf() - firstDay.valueOf()) / 86400000 - (8 - firstDayOfWeek)
+  if (diffDay >= 0) {
+    return [now.getFullYear(), Math.floor(diffDay / 7) + 1]
+  } else {
+    return getWeek(`${now.getFullYear() - 1}-12-31`)
+  }
+}
+
+export const formatTime2 = function (date = new Date()) {
+  const weekMap = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+  date = new Date(date)
+  const month = date.getMonth() + 1
+  const day = date.getDate()
+  const weekDay = date.getDay()
+  return `${weekMap[weekDay]} ${month}/${day}`
+}
+
 export default {
   formatNumber,
   formatTime

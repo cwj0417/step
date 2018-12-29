@@ -1,8 +1,8 @@
 {
   "pages": [
+    "pages/task/main",
     "pages/did/main",
     "pages/didEdit/main",
-    "pages/task/main",
     "pages/search/main"
   ],
   "window": {
