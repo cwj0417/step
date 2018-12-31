@@ -37,6 +37,18 @@ let api = {
         tasks
       )
     },
+    add (title, tag, range) {
+      return tasks.add({
+        data: {
+          title,
+          tag,
+          range,
+          start: new Date(),
+          end: null,
+          active: true
+        }
+      })
+    },
     updateRecord (taskId, week, field, value) {
       week = week.join('/')
       return taskRecord.where({

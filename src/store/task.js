@@ -17,16 +17,12 @@ export default {
     }
   },
   actions: {
-    'task-init' ({commit}) {
+    'task-init' ({dispatch}) {
       api.task.init()
         .then(res => {
           res = res.data
           res.forEach(item => {
-            api.task.getRecord(item._id, week, item.range.length)
-              .then(record => {
-                item.record = record
-                commit('task-init', item)
-              }, console.error)
+            dispatch('task-fetch-record', item)
           })
         }, console.error)
     },
@@ -34,6 +30,28 @@ export default {
       commit('task-update-record', {id, field, value})
       api.task.updateRecord(id, week, field, value)
         .then(() => {
+        }, console.error)
+    },
+    'task-fetch-record' ({commit}, item) {
+      api.task.getRecord(item._id, week, item.range.length)
+        .then(record => {
+          item.record = record
+          commit('task-init', item)
+        }, console.error)
+    },
+    'task-create' ({commit, dispatch}, {title, tag, range}) {
+      api.task.add(title, tag, range)
+        .then(res => {
+          let item = {
+            _id: res._id,
+            title,
+            tag,
+            range,
+            active: true,
+            start: new Date(),
+            end: null
+          }
+          dispatch('task-fetch-record', item)
         }, console.error)
     }
   }

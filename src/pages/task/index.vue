@@ -4,7 +4,7 @@
       <div class="header">
         <img src="../../assets/images/task_statistics.png" alt="" class="icon">
         <div class="curDate">{{curDate}}</div>
-        <img src="../../assets/images/task_add.png" alt="" class="icon">
+        <img src="../../assets/images/task_add.png" alt="" class="icon" @click="createTask">
       </div>
       <scroll-view class="task-list" scroll-y>
         <div class="task-item" v-for="(task, index) in list" :key="index">
@@ -81,12 +81,15 @@
           field: 'record',
           value
         })
+      },
+      createTask () {
+        wx.navigateTo({url: '/pages/taskCreate/main'})
       }
     },
     components: {stepNavigator},
     mounted () {
       wx.setNavigationBarTitle({
-        title: '每周任务'
+        title: 'weekly'
       })
     }
   }

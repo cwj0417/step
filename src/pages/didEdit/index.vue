@@ -22,13 +22,13 @@
           <text>{{item.detail}}</text>
         </div>
         <div class="detxt-input" v-if="isEditingDetail">
-          <textarea maxlength="1000" :auto-height="true" placeholder="输入备注(少于1000字)" v-model="inputDetail" :focus="taFocus" placeholder-style="line-height: 40rpx;" ></textarea>
+          <textarea maxlength="1000" :auto-height="true" placeholder="write your detail(less than 1000 words)" v-model="inputDetail" :focus="taFocus" placeholder-style="line-height: 40rpx;" ></textarea>
         </div>
       </div>
     </div>
     <div class="dids-edit-btn">
-      <div class="dids-btn" @click="editDetail">修改</div>
-      <div class="dids-btn" :class="{active: isEditingDetail}" @click="submit">确定</div>
+      <div class="dids-btn" @click="editDetail">modify</div>
+      <div class="dids-btn" :class="{active: isEditingDetail}" @click="submit">submit</div>
     </div>
   </div>
 </template>

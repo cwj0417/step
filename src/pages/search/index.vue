@@ -4,14 +4,14 @@
       <div class="icon-search">
         <img src="../../assets/images/icon_search.png" alt="">
       </div>
-      <input type="text" v-model="searchContent" @change="search('')" class="search-input" placeholder="search...">
+      <input type="text" v-model="searchContent" @change="search('')" class="search-input" placeholder="搜索...">
       <div class="icon-clear" @click="searchContent = ''">
         <img src="../../assets/images/icon_cross.png" alt="">
       </div>
     </div>
     <div class="search-history-indicator">
       <div class="search-history-txt">
-        搜索历史
+        search history
       </div>
       <div class="search-history-clear" @click="clearHis">
         <img src="../../assets/images/icon_trash.png" alt="">

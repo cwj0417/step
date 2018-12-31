@@ -34,7 +34,7 @@ export const getWeek = function (date = new Date()) {
 }
 
 export const formatTime2 = function (date = new Date()) {
-  const weekMap = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+  const weekMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   date = new Date(date)
   const month = date.getMonth() + 1
   const day = date.getDate()

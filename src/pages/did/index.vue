@@ -2,8 +2,8 @@
   <div class="wrap">
     <div class="main">
       <div class="dids-todo-nav">
-        <div class="dids-todo-nav-item" @click="setPage('done')" :class="{active: curPage === 'done'}">完成</div>
-        <div class="dids-todo-nav-item" @click="setPage('active')" :class="{active: curPage === 'active'}">待做</div>
+        <div class="dids-todo-nav-item" @click="setPage('done')" :class="{active: curPage === 'done'}">did</div>
+        <div class="dids-todo-nav-item" @click="setPage('active')" :class="{active: curPage === 'active'}">todo</div>
       </div>
       <div class="dids-wrap">
         <div class="dw-filter-and-search">
@@ -18,15 +18,15 @@
         </div>
         <scroll-view :scroll-y="wrapScroll" class="dw-content-wrap">
           <swiperCell ref="didItem" v-for="(todo, index) of todos" @scrollenable="wrapScroll = true" @scrolldisable="wrapScroll = false" :key="index" :page="curPage" :scope="todo" :index="index" @btn1="editDid(todo)" @btn2="deleteDid(todo)" @btn3="toggleStick(todo)" @closeOthers="closeOthers">
-            <div class="dw-content-item" :class="{striped: index % 2 === 1}" @click="todo.detail && editDid(todo)">
-              <div class="dwct-p1" @click.prevent="toggleDone(todo)">
+            <div class="dw-content-item" :class="{striped: index % 2 === 1}">
+              <div class="dwct-p1" @click="toggleDone(todo)">
                 <img src="../../assets/images/did_item_indicator.png" alt="" v-if="scope && scope.done">
                 <img src="../../assets/images/did_item_indicator_inactive.png" alt="" v-else>
               </div>
-              <div class="dwct-p2">
+              <div class="dwct-p2" @click="todo.detail && editDid(todo)">
                 {{scope && scope.content}}
               </div>
-              <div class="dwct-p3">
+              <div class="dwct-p3" @click="todo.detail && editDid(todo)">
                 {{scope && scope.end}}
               </div>
               <img class="dwct-p4" src="../../assets/images/item_corner.png" alt="" v-if="scope && scope.detail">
@@ -35,10 +35,10 @@
           </swiperCell>
           <div class="empty" v-if="!todos.length">
             <template v-if="curPage === 'active'">
-              您已做完所有事项
+              all todos has been done
             </template>
             <template v-if="curPage === 'done'">
-              暂无完成任务事项
+              nothing has been done
             </template>
           </div>
         </scroll-view>
@@ -86,7 +86,7 @@
         return this.curPage === 'done' ? store.state.didsCurSearch : store.state.todosCurSearch
       },
       placeholder () {
-        return this.curPage === 'done' ? `输入今天完成了什么` : `输入打算做些什么`
+        return this.curPage === 'done' ? `what you've done today` : `what you plan to do`
       }
     },
     components: {stepNavigator, swiperCell},
@@ -152,7 +152,7 @@
     },
     mounted () {
       wx.setNavigationBarTitle({
-        title: '待做事项'
+        title: 'todos'
       })
     }
   }

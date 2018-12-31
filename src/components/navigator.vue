@@ -3,13 +3,13 @@
     <div @click="to('/pages/did/main')" class="nav-item">
       <div class="nav-name">
         <img src="../assets/images/nav_did.png">
-        <div>待做事项</div>
+        <div>todos</div>
       </div>
     </div>
     <div @click="to('/pages/task/main')" class="nav-item">
       <div class="nav-name">
         <img src="../assets/images/nav_did.png">
-        <div>每周任务</div>
+        <div>weekly</div>
       </div>
     </div>
   </div>
