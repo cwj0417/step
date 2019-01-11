@@ -6,7 +6,7 @@
         <div class="curDate">{{curDate}}</div>
         <img src="../../assets/images/task_add.png" alt="" class="icon" @click="createTask">
       </div>
-      <scroll-view class="task-list" scroll-y>
+      <scroll-view class="task-list" :scroll-y="wrapScroll">
         <div class="task-item" v-for="(task, index) in list" :key="index">
           <div class="ti-indicator" @click="toggleDone(task)">
             <div class="ti-indicator-wrap">
@@ -29,19 +29,28 @@
           </div>
         </div>
       </scroll-view>
+      <div class="popup">
+        <popup :title="popup.title" :date="popup.date" @scrollenable="wrapScroll = true" @scrolldisable="wrapScroll = false" @done="donePopup" @fail="failPopup"></popup>
+      </div>
     </div>
     <step-navigator></step-navigator>
   </div>
 </template>
 <script>
   import stepNavigator from '@/components/navigator'
+  import popup from '@/components/clockInPopup'
   import {formatTime2} from '@/utils'
   import store from '@/store'
 
   export default {
     data () {
       return {
-        curDate: formatTime2()
+        curDate: formatTime2(),
+        wrapScroll: true,
+        popup: {
+          title: '大便',
+          date: formatTime2('2018-12-31')
+        }
       }
     },
     computed: {
@@ -84,9 +93,19 @@
       },
       createTask () {
         wx.navigateTo({url: '/pages/taskCreate/main'})
+      },
+      donePopup () {
+        setTimeout(() => {
+          this.popup.title += 1
+        }, 1250)
+      },
+      failPopup () {
+        setTimeout(() => {
+          this.popup.title += 1
+        }, 1250)
       }
     },
-    components: {stepNavigator},
+    components: {stepNavigator, popup},
     mounted () {
       wx.setNavigationBarTitle({
         title: 'weekly'
@@ -182,5 +201,12 @@
         }
       }
     }
+  }
+  .popup {
+    width: 702rpx;
+    height: 84rpx;
+    left: 24rpx;
+    bottom: 130rpx;
+    position: absolute;
   }
 </style>
