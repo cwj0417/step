@@ -33,6 +33,14 @@ export const getWeek = function (date = new Date()) {
   }
 }
 
+export const getDayByWeek = function (year, week, day) {
+  const firstDay = new Date(`${year}-01-01`)
+  let firstDayOfWeek = firstDay.getDay()
+  if (firstDayOfWeek === 0 || firstDayOfWeek === 1) firstDayOfWeek += 7
+  firstDayOfWeek = 8 - firstDayOfWeek // here is not "first day of week" but "days belongs to last year"
+  return new Date(firstDay.valueOf() + 86400000 * (firstDayOfWeek + (week - 1) * 7 + day))
+}
+
 export const formatTime2 = function (date = new Date()) {
   const weekMap = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
   date = new Date(date)

@@ -104,10 +104,11 @@ export default {
       api.history.update(target, [])
     },
     'todo-init' ({commit}) {
-      api.todo.init()
+      return api.todo.init()
         .then(res => {
           res = res.data.map(didMap)
           commit('todo-init', res)
+          return res
         })
     },
     'todo-add-item' ({commit}, {content, done}) {

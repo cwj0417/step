@@ -42,7 +42,7 @@
   const defaultValue = {
     title: '',
     tag: 'others',
-    range: [0, 1, 2, 3, 4, 5, 6]
+    range: [0, 1, 2, 3, 4, 5, 6] // 0 is monday, 6 is sunday
   }
   export default {
     data () {

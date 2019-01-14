@@ -4,6 +4,7 @@ wx.cloud.init({
 })
 console.info('cloud init')
 const db = wx.cloud.database()
+const _ = db.command
 const todo = db.collection('todo')
 const his = db.collection('history')
 const tasks = db.collection('task-list')
@@ -65,7 +66,21 @@ let api = {
             })
         }, console.error)
     },
-    getRecord (task, week, length) {
+    getRecordByWeeks (weeks) {
+      return getAll(
+        taskRecord.where({
+          week: _.in(weeks)
+        })
+      )
+        .then(res => {
+          if (res.data.length) {
+            return res.data
+          } else {
+            return []
+          }
+        }, console.error)
+    },
+    getRecord (task, week, length) { // todo: 用这个方法 和 判断week是否在开始日期后 来 在系统初始化时创建空task-record
       week = week.join('/')
       return getAll(
         taskRecord.where({

@@ -32,10 +32,12 @@ const store = new Vuex.Store({
 })
 
 const init = () => {
-  store.dispatch('todo-init')
-  store.dispatch('task-init')
+  return Promise.all([
+    store.dispatch('todo-init'),
+    store.dispatch('task-init')
+  ])
 }
 
-init()
+export let initiate = init()
 
 export default store

@@ -10,26 +10,33 @@ export default {
     },
     'task-update-record' (state, {id, field, value}) {
       let index = state.tasks.findIndex(i => i._id === id)
-      state.tasks.splice(index, 1, {
-        ...state.tasks[index],
-        [field]: value
-      })
+      if (index > -1) {
+        state.tasks.splice(index, 1, {
+          ...state.tasks[index],
+          [field]: value
+        })
+      }
     }
   },
   actions: {
     'task-init' ({dispatch}) {
-      api.task.init()
+      return api.task.init()
         .then(res => {
           res = res.data
           res.forEach(item => {
             dispatch('task-fetch-record', item)
           })
+          return res
         }, console.error)
     },
-    'task-update-record' ({commit}, {id, field, value}) {
-      commit('task-update-record', {id, field, value})
-      api.task.updateRecord(id, week, field, value)
-        .then(() => {
+    'task-update-record' ({commit}, {id, field, value, w}) {
+      if (!w) {
+        w = week
+        commit('task-update-record', {id, field, value})
+      }
+      return api.task.updateRecord(id, w, field, value)
+        .then(res => {
+          return res
         }, console.error)
     },
     'task-fetch-record' ({commit}, item) {

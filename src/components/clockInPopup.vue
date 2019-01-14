@@ -1,5 +1,5 @@
 <template>
-  <div class="clock-in-popup" :style="{'background-color': bg, opacity}">
+  <div class="clock-in-popup" :style="{'background-color': bg, opacity}" v-if="title">
     <div v-if="right < 280" class="ci-btn-left ci-btn" @touchstart="ts" @touchmove="tm" @touchend="te" :style="{left: 0, width: left + 'rpx', transition: isInTouch ? '0' : 'all .25s ease-in-out'}">
       <div class="icon">
         <img src="../assets/images/ci_fail.png" alt="">
@@ -71,7 +71,7 @@
           this.bg = '#28ac86'
           if (disX >= 200) {
             this.$emit('fail')
-            this.toggle()
+            this.toggle(0)
             setTimeout(() => {
               this.left = 80
             }, 1000)
@@ -103,15 +103,15 @@
           this.bg = '#28ac86'
           if (disX >= 200) {
             this.$emit('done')
-            this.toggle()
+            this.toggle(0)
             setTimeout(() => {
               this.right = 80
             }, 1000)
           }
         }
       },
-      toggle () {
-        this.opacity = this.opacity ? 0 : 1
+      toggle (op = 1) {
+        this.opacity = op
       }
     }
   }

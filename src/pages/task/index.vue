@@ -39,8 +39,9 @@
 <script>
   import stepNavigator from '@/components/navigator'
   import popup from '@/components/clockInPopup'
-  import {formatTime2} from '@/utils'
-  import store from '@/store'
+  import {formatTime2, getWeek, getDayByWeek} from '@/utils'
+  import api from '@/api'
+  import store, { initiate } from '@/store'
 
   export default {
     data () {
@@ -48,9 +49,11 @@
         curDate: formatTime2(),
         wrapScroll: true,
         popup: {
-          title: '大便',
-          date: formatTime2('2018-12-31')
-        }
+          title: '',
+          date: formatTime2('2018-12-31'),
+          sourceWeek: null
+        },
+        needChecked: []
       }
     },
     computed: {
@@ -96,19 +99,67 @@
       },
       donePopup () {
         setTimeout(() => {
-          this.popup.title += 1
+          this.checkStatus(this.popup.sourceWeek, 1)
         }, 1250)
       },
       failPopup () {
         setTimeout(() => {
-          this.popup.title += 1
+          this.checkStatus(this.popup.sourceWeek, -1)
         }, 1250)
+      },
+      checkStatus (week, status) {
+        let value = week.record
+        value[value.indexOf(0)] = status
+        store.dispatch('task-update-record', {
+          id: week.task_id,
+          field: 'record',
+          w: week.week.split('/'),
+          value
+        })
+          .then(this.fetchPopup)
+      },
+      fetchPopup () {
+        const week = getWeek().join('/')
+        const fetchedWeek = this.needChecked.find(i => { // fetch an record (of a week) that need to be check
+          if (i.week === week) {
+            const task = store.state.tasks.find(task => task._id === i.task_id)
+            let dateOfToday = new Date().getDay()
+            dateOfToday = dateOfToday === 0 ? 6 : dateOfToday - 1
+            return i.record.find((n, i) => task.range[i] >= dateOfToday && n === 0)
+          } else {
+            return i.record.indexOf(0) > -1
+          }
+        })
+        if (!fetchedWeek) {
+          this.popup = {
+            title: null,
+            date: null,
+            sourceWeek: null
+          }
+          return
+        }
+        const task = store.state.tasks.find(task => task._id === fetchedWeek.task_id)
+        const title = task.title
+        const dayIndex = fetchedWeek.record.indexOf(0)
+        const day = task.range[dayIndex]
+        const date = formatTime2(getDayByWeek(...fetchedWeek.week.split('/'), day))
+        this.popup = {
+          title,
+          date,
+          sourceWeek: fetchedWeek
+        }
       }
     },
     components: {stepNavigator, popup},
     mounted () {
       wx.setNavigationBarTitle({
         title: 'weekly'
+      })
+      let week = getWeek().join('/')
+      let lastWeek = getWeek(Date.now() - 86400000 * 7).join('/')
+      api.task.getRecordByWeeks([week, lastWeek]).then(res => {
+        this.needChecked = res
+        initiate.then(this.fetchPopup)
       })
     }
   }
