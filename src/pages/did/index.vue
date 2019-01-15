@@ -233,6 +233,10 @@
             color: #333;
             font-size: 35rpx;
             padding-left: 30rpx;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 0;
+            overflow: hidden;
           }
           .dwct-p3 {
             width: 152rpx;

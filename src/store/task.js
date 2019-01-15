@@ -29,9 +29,8 @@ export default {
           return res
         }, console.error)
     },
-    'task-update-record' ({commit}, {id, field, value, w}) {
-      if (!w) {
-        w = week
+    'task-update-record' ({commit}, {id, field, value, w = week}) {
+      if (+w[0] === +week[0] && +w[1] === +week[1]) {
         commit('task-update-record', {id, field, value})
       }
       return api.task.updateRecord(id, w, field, value)

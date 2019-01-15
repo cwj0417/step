@@ -125,7 +125,7 @@
             const task = store.state.tasks.find(task => task._id === i.task_id)
             let dateOfToday = new Date().getDay()
             dateOfToday = dateOfToday === 0 ? 6 : dateOfToday - 1
-            return i.record.find((n, i) => task.range[i] >= dateOfToday && n === 0)
+            return i.record.find((n, i) => task.range[i] < dateOfToday && n === 0) != null
           } else {
             return i.record.indexOf(0) > -1
           }

@@ -18,11 +18,11 @@
         </div>
       </div>
       <div class="dids-edit-txt">
-        <div class="detxt-display" v-if="!isEditingDetail">
+        <scroll-view scroll-y class="detxt-display" v-if="!isEditingDetail">
           <text>{{item.detail}}</text>
-        </div>
+        </scroll-view>
         <div class="detxt-input" v-if="isEditingDetail">
-          <textarea maxlength="1000" :auto-height="true" placeholder="write your detail(less than 1000 words)" v-model="inputDetail" :focus="taFocus" placeholder-style="line-height: 40rpx;" ></textarea>
+          <textarea cursor-spacing="200rpx" maxlength="1000" placeholder="write your detail(less than 1000 words)" v-model="inputDetail" :focus="taFocus" placeholder-style="line-height: 40rpx;" ></textarea>
         </div>
       </div>
     </div>
@@ -124,7 +124,10 @@
           height: 52rpx;
           display: flex;
           .dett-display {
-
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+            overflow: hidden;
           }
           .dett-edit-btn {
             width: 52rpx;
@@ -157,6 +160,8 @@
           flex-grow: 1;
           word-break: break-all;
           word-wrap: break-word;
+          height: 100%;
+          overflow: auto;
         }
         .detxt-input {
           width: 100%;
@@ -165,6 +170,8 @@
           word-wrap: break-word;
           textarea {
             width: 100%;
+            overflow: auto;
+            height: 700rpx;
           }
         }
       }
