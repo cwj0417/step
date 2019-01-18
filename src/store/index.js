@@ -38,6 +38,6 @@ const init = () => {
   ])
 }
 
-export let initiate = init()
+export const initiate = init()
 
 export default store

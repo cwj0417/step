@@ -66,6 +66,22 @@ let api = {
             })
         }, console.error)
     },
+    getRecordByIdAndWeeks (id, weeks) {
+      weeks = weeks.map(e => e.join('/'))
+      return getAll(
+        taskRecord.where({
+          task_id: id,
+          week: _.in(weeks)
+        })
+      )
+        .then(res => {
+          if (res.data.length) {
+            return res.data
+          } else {
+            return []
+          }
+        }, console.error)
+    },
     getRecordByWeeks (weeks) {
       return getAll(
         taskRecord.where({

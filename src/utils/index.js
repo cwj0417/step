@@ -33,8 +33,9 @@ export const getWeek = function (date = new Date()) {
   }
 }
 
-export const getDayByWeek = function (year, week, day) {
-  const firstDay = new Date(`${year}-01-01`)
+export const getDayByWeek = function (year, week, day) { // day is from 0 to 6
+  let firstDay = new Date()
+  firstDay.setFullYear(year, 0, 1)
   let firstDayOfWeek = firstDay.getDay()
   if (firstDayOfWeek === 0 || firstDayOfWeek === 1) firstDayOfWeek += 7
   firstDayOfWeek = 8 - firstDayOfWeek // here is not "first day of week" but "days belongs to last year"

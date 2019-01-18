@@ -14,7 +14,7 @@
               <img src="../../assets/images/did_item_indicator_inactive.png" alt="" v-else>
             </div>
           </div>
-          <div class="ti-content">
+          <div class="ti-content" @click="goDetail(task)">
             <div class="tic-content">
               <div class="tic-title">
                 {{task.title}}
@@ -29,7 +29,7 @@
           </div>
         </div>
       </scroll-view>
-      <div class="popup">
+      <div class="popup" v-if="popup.title">
         <popup :title="popup.title" :date="popup.date" @scrollenable="wrapScroll = true" @scrolldisable="wrapScroll = false" @done="donePopup" @fail="failPopup"></popup>
       </div>
     </div>
@@ -148,18 +148,23 @@
           date,
           sourceWeek: fetchedWeek
         }
+      },
+      goDetail (task) {
+        wx.navigateTo({url: `/pages/taskDetail/main?taskId=${task._id}`})
       }
     },
     components: {stepNavigator, popup},
     mounted () {
-      wx.setNavigationBarTitle({
-        title: 'weekly'
-      })
       let week = getWeek().join('/')
       let lastWeek = getWeek(Date.now() - 86400000 * 7).join('/')
       api.task.getRecordByWeeks([week, lastWeek]).then(res => {
         this.needChecked = res
         initiate.then(this.fetchPopup)
+      })
+    },
+    onShow () {
+      wx.setNavigationBarTitle({
+        title: 'weekly'
       })
     }
   }
