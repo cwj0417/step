@@ -1,8 +1,8 @@
 {
   "pages": [
     "pages/task/main",
-    "pages/taskDetail/main",
     "pages/did/main",
+    "pages/taskDetail/main",
     "pages/taskCreate/main",
     "pages/didEdit/main",
     "pages/search/main"

@@ -18,7 +18,7 @@
       loading...
     </div>
     <div class="task-calender" v-else>
-      <div class="tc-tr" v-for="(week, wi) of calender" :key="wi">
+      <div class="tc-tr" v-for="(week, wi) of calender" :key="wi" :class="{'extra-line': calender.length === 6}">
         <img src="../../assets/images/start_flag.png" class="start-week tc-start-week" alt="" v-if="week.type === 'startWeek'">
         <div class="tc-td" :class="{suc: day.status === 1, fail: day.status === -1}" v-for="(day, di) of week.data" :key="di">
           {{day.day}}
@@ -34,8 +34,10 @@
       <div class="task-data-list">
         <div class="task-data-list-item" v-for="(week, wi) of calender" :key="wi">
           <div class="tdli-p1">第{{week.w[1]}}周</div>
-          <div class="tdli-p2">{{week.complete}} / {{task.range.length}}</div>
-          <div class="tdli-p3">须努力</div>
+          <div class="tdli-p2" v-if="week.type === 'invalid'">---</div>
+          <div class="tdli-p2" v-else>{{week.complete}} / {{task.range.length}}</div>
+          <div class="tdli-p3" v-if="week.type === 'invalid'">---</div>
+          <div class="tdli-p3" v-else>须努力</div>
         </div>
       </div>
     </div>
@@ -76,7 +78,10 @@
         let weeks = []
         let _day = new Date()
         _day.setFullYear(year, month, 1)
-        while (_day.getMonth() === month) {
+        let offset = _day.getDay()
+        offset = offset === 0 ? 6 : offset - 1
+        _day.setDate(_day.getDate() - offset)
+        while ((month - _day.getMonth()) === 0 || (month - _day.getMonth()) === 1 || (month - _day.getMonth()) === -11) {
           weeks.push(getWeek(_day))
           _day.setDate(_day.getDate() + 7)
         }
@@ -191,9 +196,9 @@
         .ch-item {
           font-size: 28rpx;
           line-height: 80rpx;
-          width: 66rpx;
+          width: 64rpx;
           height: 80rpx;
-          margin: 0 17rpx;
+          margin: 0 18rpx;
           text-align: center;
           color: #999;
         }
@@ -211,20 +216,30 @@
         width: 100%;
         display: flex;
         position: relative;
+        &.extra-line {
+          height: 75rpx;
+          .tc-td {
+            margin: 8rpx 20rpx 7rpx;
+            width: 60rpx;
+            height: 60rpx;
+            line-height: 60rpx;
+            font-size: 30rpx;
+          }
+        }
         .tc-start-week {
           position: absolute;
           top: 12rpx;
           left: 17rpx;
         }
         .tc-td {
-          width: 66rpx;
-          height: 66rpx;
-          margin: 12rpx 17rpx;
-          border-radius: 50%;
+          width: 64rpx;
+          height: 64rpx;
+          line-height: 64rpx;
           font-size: 32rpx;
+          margin: 13rpx 18rpx;
+          border-radius: 50%;
           color: #999;
           text-align: center;
-          line-height: 66rpx;
           &.suc {
             background-color: $vi_base;
             color: #fff;
