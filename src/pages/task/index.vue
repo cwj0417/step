@@ -118,11 +118,13 @@
         })
           .then(this.fetchPopup)
       },
-      fetchPopup () {
+      fetchPopup (resolve) {
+        const tasklist = resolve && Array.isArray((resolve)) ? resolve[1] : store.state.tasks
+        console.log(tasklist)
         const week = getWeek().join('/')
         const fetchedWeek = this.needChecked.find(i => { // fetch an record (of a week) that need to be check
           if (i.week === week) {
-            const task = store.state.tasks.find(task => task._id === i.task_id)
+            const task = tasklist.find(task => task._id === i.task_id)
             let dateOfToday = new Date().getDay()
             dateOfToday = dateOfToday === 0 ? 6 : dateOfToday - 1
             return i.record.find((n, i) => task.range[i] < dateOfToday && n === 0) != null
@@ -138,7 +140,7 @@
           }
           return
         }
-        const task = store.state.tasks.find(task => task._id === fetchedWeek.task_id)
+        const task = tasklist.find(task => task._id === fetchedWeek.task_id)
         const title = task.title
         const dayIndex = fetchedWeek.record.indexOf(0)
         const day = task.range[dayIndex]
